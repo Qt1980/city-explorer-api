@@ -1,50 +1,71 @@
 'use strict';
-const cors = require('cors');
+
 //BACK END SERVER
-// const { response } = require('express'); 
+const cors = require('cors');
 
 const express = require('express'); //This line of code is how we import express into the server.
-require('dotenv').config();
-const weatherData = require('./data/weather.json');
 const app = express();
-const PORT = process.env.PORT || 3001;
 app.use(cors());
-console.log(weatherData);
+
+const superagent = require('superagent');
+
+require('dotenv').config();
+// const weatherData = require('./data/weather.json');
+const PORT = process.env.PORT || 3001;
+
+const axios = require('axios');
 
 app.get('/', (request, response) => {
-    response.send('Hello, You got it!');
+    response.send('You got it Qadree!');
 });
 
-app.get('/weather', (request, response) => {
+app.get('/weather', async (request, response) => {
+    // console.log(request.query)
       try {
-        const dailyForecasts  = weatherData.data.map(day => new Forecast(day));
+        const weatherResponse = await superagent.get(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${request.query.lat}&lon=${request.query.lon}&key=${process.env.WEATHER_API_KEY}`)
+        // console.log(weatherResponse.data)
+        // const dailyForecasts  = weatherData.data.map(day => new Forecast(day));
+        console.log('here', weatherResponse.body)
+        const dailyForecasts = await weatherResponse.body.data.map(day => new Forecast(day));
+        console.log(dailyForecasts, 'this is back end data')
         response.send(dailyForecasts);
+        // response.send(weatherResponse.data)
     } catch (error) {
         handleErrors(error, response);
     }
 });
+
+app.get('/movies', getMovies)
+
+function getMovies(request, response) {
+    const url = 'https://api.themoviedb.org/3/search/movie/'
+    let queryObject = {
+        //put query in as key value pair (key: value)
+        api_key: process.env.MOVIE_KEY_API,
+        query: request.query.city
+    }
+    superagent
+        .get(url)
+        .query(queryObject)
+        .then(movieResults => {
+            response.send(movieResults.body.results.map(
+                film => new Movie(film)
+            ))
+        })
+}
 
 function Forecast(obj) {
     this.date = obj.datetime;
     this.description = obj.weather.description;
 }
 
+function Movie(film) {
+    this.title = film.title;
+    this.overview = film.overview;
+}
+
 function handleErrors (error, response) {
     response.status(500).send('Internal Error');
 }
 
-// app.get('/', (request, response) => {
-//     response.json(lat)
-// })
 app.listen(PORT, () => console.log(`server is listening on port ${PORT}`));
-// const cors = require('cors';
-
-// const superagent = require('superagent');
-
-// const app = express();
-
-// const corsOptions = {
-//     origin: function (origin, callback) {
-//         callback(null, true);
-//     }
-// };
