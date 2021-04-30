@@ -8,8 +8,9 @@
 //app.listen
 
 //get handlers from their own files
-
-const getMovies = require('./handlers/getMovies');//this is how we import from movies.js into the server
+//this is how we import from weather and movies.js into the server
+const getMovies = require('./handlers/weatherResponse');
+const getMovies = require('./handlers/getMovies');
 //--------------------LINE SEPARATION----------------------------
 
 const cors = require('cors');
