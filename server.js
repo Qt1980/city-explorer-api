@@ -8,9 +8,9 @@
 //app.listen
 
 //get handlers from their own files
-//this is how we import from weather and movies.js into the server
-const getMovies = require('./handlers/weatherResponse');
-const getMovies = require('./handlers/getMovies');
+//this is how we import using router from weather and movies.js into the server
+const weatherRouter = require('./handlers/weather');
+const movieRouter = require('./handlers/movies');
 //--------------------LINE SEPARATION----------------------------
 
 const cors = require('cors');
@@ -26,6 +26,8 @@ const PORT = process.env.PORT || 3001;
 app.get('/', (request, response) => {
     response.send('You got it Qadree!');
 });
+app.use(weatherRouter);//this is how to use the router.get. This gives access to router.get in the movie and weather.js files.
+app.use(movieRouter);
 
 //Moved the weather code below to it's own file.
 

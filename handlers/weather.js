@@ -1,9 +1,11 @@
 'use strict';
 
-const axios = require('axios');//importing axios into weather.js
+const express = require('express');
+const router = express.Router(); //
+const superagent = require('superagent');//importing superagent into weather.js
 
-app.get('/weather', async (request, response) => {
-  // console.log(request.query)
+router.get('/weather', async (request, response) => {
+  console.log(request.query, process.env.WEATHER_API_KEY)
     try {
       const weatherResponse = await superagent.get(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${request.query.lat}&lon=${request.query.lon}&key=${process.env.WEATHER_API_KEY}`)
       // console.log(weatherResponse.data)
@@ -21,7 +23,14 @@ app.get('/weather', async (request, response) => {
 function Forecast(obj) {
   this.date = obj.datetime;
   this.description = obj.weather.description;
+};
+
+function handleErrors (error, response) {
+  console.log('error here', error);
+  response.status(500).send('Internal Error');
 }
 
+
+
 //this is how to export from weather.js into server.js
-module.exports = weatherResponse; 
+module.exports = router; 
