@@ -1,9 +1,6 @@
 'use strict';
 const superagent = require('superagent');//importing superagent into movies.js
 
-
-app.get('/movies', getMovies)
-
 function getMovies(request, response) {
     const url = 'https://api.themoviedb.org/3/search/movie/'
     let queryObject = {
@@ -25,6 +22,8 @@ function Movie(film) {
   this.title = film.title;
   this.overview = film.overview;
 }
+
+app.get('/movies', getMovies)
     
 //node syntax for what is being exported
 
