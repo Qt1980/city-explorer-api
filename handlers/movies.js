@@ -1,8 +1,10 @@
 'use strict';
+
+const express = require('express');
+const router = express.Router(); //creating a location to store routes
 const superagent = require('superagent');//importing superagent into movies.js
 
-
-app.get('/movies', getMovies)
+router.get('/movies', getMovies)//replaced app.get with router.get. This simulates app.get.
 
 function getMovies(request, response) {
     const url = 'https://api.themoviedb.org/3/search/movie/'
@@ -29,4 +31,4 @@ function Movie(film) {
 //node syntax for what is being exported
 
 //this is how to export from movies.js into server.js
-module.exports = getMovies;
+module.exports = router;
